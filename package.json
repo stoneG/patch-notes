@@ -1,0 +1,26 @@
+{
+  "name": "patch-notes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "add-patch-notes": "node scripts/add-patch-notes.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stoneG/patch-notes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stoneG/patch-notes/issues"
+  },
+  "homepage": "https://github.com/stoneG/patch-notes#readme",
+  "dependencies": {
+    "execa": "^4.0.3",
+    "minimist": "^1.2.5",
+    "semver-utils": "^1.1.4"
+  }
+}

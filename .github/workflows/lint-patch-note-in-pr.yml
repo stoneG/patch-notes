@@ -1,0 +1,21 @@
+name: Lint Patch Notes in PR
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, edited, reopened]
+jobs:
+  add_patch_notes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stoneG/add-patch-notes-action
+        uses: actions/checkout@v2
+        with:
+          repository: stoneG/add-patch-notes-action
+          ref: refs/heads/main
+          path: ./.github/actions/add-patch-notes
+      - name: Add patch notes
+        uses: ./.github/actions/add-patch-notes
+        id: addPatchNotes
+      - name: Print patch note
+        run: echo "Found patch note ${{ steps.addPatchNotes.outputs.type }} - ${{ steps.addPatchNotes.outputs.patchNote }}"
