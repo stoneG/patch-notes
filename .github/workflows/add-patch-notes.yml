@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Checkout stoneG/add-patch-notes-action
+        uses: actions/checkout@v2
+        with:
+          repository: stoneG/add-patch-notes-action
+          ref: refs/heads/main
+          path: ./.github/actions/add-patch-notes
       - name: Add patch notes
         uses: ./.github/actions/add-patch-notes
         id: addPatchNotes
