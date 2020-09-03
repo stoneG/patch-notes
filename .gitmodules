@@ -1,0 +1,3 @@
+[submodule ".github/actions/add-patch-notes"]
+	path = .github/actions/add-patch-notes
+	url = https://github.com/stoneG/add-patch-notes-action

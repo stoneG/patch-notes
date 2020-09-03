@@ -1,0 +1,19 @@
+name: Add Patch Notes
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+jobs:
+  add_patch_notes:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add patch notes
+        uses: ./.github/actions/add-patch-notes
+        id: addPatchNotes
+      - name: Print patch note type
+        run: echo "Patch Notes Type ${{ steps.addPatchNotes.outputs.type }}"
+      - name: Print patch notes
+        run: echo "Patch Notes ${{ steps.addPatchNotes.outputs.patchNote }}"
