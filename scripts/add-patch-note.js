@@ -83,7 +83,7 @@ async function updatePatchNotes(fileName, defaultPatchNotes) {
     .catch(err => console.err(err))
 }
 
-;(async function addPatchNote() {
+;(async function() {
   if (!argv.type || argv.type === 'n/a') {
     console.log(`Got patch note type (${argv.type}), skipping...`)
     return
