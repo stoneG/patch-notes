@@ -17,6 +17,8 @@ jobs:
       - name: Parse patch note
         id: patchNote
         uses: ./.github/actions/add-patch-notes
+
+      - name: Print parsed patch note
         run: echo "Found patch note ${{ steps.patchNote.outputs.type }}(${{ steps.patchNote.outputs.context }}) - ${{ steps.patchNote.outputs.note }}"
 
       - name: Write patch note
