@@ -80,7 +80,7 @@ async function updatePatchNotes(fileName, defaultPatchNotes) {
   )
   fs.writeJson(`${PATCH_NOTES_JSON_DIR}/${fileName}.json`, patchNotes)
     .then(() => console.log(`Updated ${fileName}.json with ${argv.type}: ${argv.note}`))
-    .catch(err => console.err(err))
+    .catch(err => console.error(err))
 }
 
 ;(async function() {
