@@ -1,5 +1,5 @@
 const exec = require('./exec')
-const package = require('../../package.json')
+const package = require('../package.json')
 const semverUtils = require('semver-utils')
 const fs = require('fs-extra')
 
