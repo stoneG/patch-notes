@@ -1,7 +1,7 @@
 name: Version Patch Notes
 on:
   release:
-    types: [published]
+    types: [created]
 jobs:
   version_patch_notes:
     # Only run this job if this is a vX.X.X named release
