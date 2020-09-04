@@ -1,25 +1,36 @@
 name: Add Patch Notes
 on:
   pull_request:
-    branches:
-      - master
     types: [closed]
 jobs:
-  add_patch_notes:
+  parse:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Checkout stoneG/add-patch-notes-action
         uses: actions/checkout@v2
         with:
           repository: stoneG/add-patch-notes-action
           ref: refs/heads/main
           path: ./.github/actions/add-patch-notes
-      - name: Add patch notes
+
+      - name: Parse patch note
+        id: patchNote
         uses: ./.github/actions/add-patch-notes
-        id: addPatchNotes
-      - name: Print patch note type
-        run: echo "Patch Notes Type ${{ steps.addPatchNotes.outputs.type }}"
-      - name: Print patch notes
-        run: echo "Patch Notes ${{ steps.addPatchNotes.outputs.patchNote }}"
+        run: echo "Found patch note ${{ steps.patchNote.outputs.type }}(${{ steps.patchNote.outputs.context }}) - ${{ steps.patchNote.outputs.note }}"
+
+      - name: Write patch note
+        run: npm run add-patch-note --baseRef=${{ github.base_ref }} --type=${{ steps.patchNote.outputs.type }} --context=${{ steps.patchNote.outputs.context }} --note="${{ steps.patchNote.outputs.note }}"
+
+      - name: Commit & push patch note
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(patchNotes): add patch note"
+          # Optional branch to push to, defaults to the current branch
+          branch: ${{ github.base_ref }}
+
+          # Optional glob pattern of files which should be added to the commit
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: patch-notes/json/*.json
