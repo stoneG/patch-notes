@@ -1,0 +1,39 @@
+name: Version Patch Notes
+on:
+  release:
+    types: [published]
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout base branch (${{ github.base_ref }})
+        uses: actions/checkout@v2
+      - run: npm install
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Version main patch notes
+        run: echo ${{ github.event.release.name }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased.json ./patch-notes/json/{}.json
+
+      - name: Version beta patch notes
+        run: echo ${{ github.event.release.name }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased-beta.json ./patch-notes/json/{}.json
+
+      - name: Commit & push patch note
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(patchNotes): add patch note"
+          # Optional branch to push to, defaults to the current branch
+          branch: ${{ github.base_ref }}
+
+          # Optional glob pattern of files which should be added to the commit
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: patch-notes/json/*.json
