@@ -6,6 +6,11 @@ jobs:
   parse:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
     steps:
       - name: Checkout stoneG/add-patch-notes-action
         uses: actions/checkout@v2
@@ -20,6 +25,11 @@ jobs:
 
       - name: Print parsed patch note
         run: echo "Found patch note ${{ steps.patchNote.outputs.type }}(${{ steps.patchNote.outputs.context }}) - ${{ steps.patchNote.outputs.note }}"
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: Write patch note
         run: npm run add-patch-note --baseRef=${{ github.base_ref }} --type=${{ steps.patchNote.outputs.type }} --context=${{ steps.patchNote.outputs.context }} --note="${{ steps.patchNote.outputs.note }}"
