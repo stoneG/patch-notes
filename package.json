@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "add-patch-notes": "node scripts/add-patch-notes.js"
+    "add-patch-note": "node scripts/add-patch-note.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/stoneG/patch-notes#readme",
   "dependencies": {
     "execa": "^4.0.3",
+    "fs-extra": "^9.0.1",
     "minimist": "^1.2.5",
     "semver-utils": "^1.1.4"
   }

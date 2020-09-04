@@ -1,11 +1,9 @@
 name: Lint Patch Notes in PR
 on:
   pull_request:
-    branches:
-      - master
     types: [opened, edited, reopened]
 jobs:
-  add_patch_notes:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout stoneG/add-patch-notes-action
@@ -18,4 +16,4 @@ jobs:
         uses: ./.github/actions/add-patch-notes
         id: addPatchNotes
       - name: Print patch note
-        run: echo "Found patch note ${{ steps.addPatchNotes.outputs.type }} - ${{ steps.addPatchNotes.outputs.patchNote }}"
+        run: echo "Found patch note ${{ steps.addPatchNotes.outputs.type }}(${{ steps.addPatchNotes.outputs.context }}) - ${{ steps.addPatchNotes.outputs.patchNote }}"
