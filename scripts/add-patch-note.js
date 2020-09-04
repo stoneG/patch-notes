@@ -117,7 +117,7 @@ async function updatePatchNotes(fileName, defaultPatchNotes) {
     updatePatchNotes(betaVersion, defaultBetaPatchNotes)
   } else {
     if (argv.context != 'beta') {
-      updatePatchNotes('unreleased', defaultBetaPatchNotes)
+      updatePatchNotes('unreleased', defaultPatchNotes)
     }
     updatePatchNotes('unreleased-beta', defaultBetaPatchNotes)
   }
