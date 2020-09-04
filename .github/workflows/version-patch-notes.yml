@@ -2,11 +2,9 @@ name: Version Patch Notes
 on:
   push:
     tags:
-      - v*
+      - 'v*'
 jobs:
   version_patch_notes:
-    # Only run this job if this is a vX.X.X named release
-    if: startsWith(github.event.release.name, 'v')
     runs-on: ubuntu-latest
 
     strategy:
