@@ -1,10 +1,10 @@
 name: Version Patch Notes
 on:
-  push:
-    tags:
-      - 'v*'
+  create:
 jobs:
   version_patch_notes:
+    # Only run this job if this is a vX.X.X named tag
+    if: github.event.ref_type == 'tag' && startsWith(github.event.ref, 'v')
     runs-on: ubuntu-latest
 
     strategy:
@@ -12,25 +12,25 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - name: Checkout release (${{ github.event.release.name }})
+      - name: Checkout release (${{ github.event.ref }})
         uses: actions/checkout@v2
 
       - name: Version main patch notes
-        run: sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/${{ github.event.release.name }}/' ./patch-notes/json/unreleased.json
+        run: sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/${{ github.event.ref }}/' ./patch-notes/json/unreleased.json
 
       - name: Move main patch notes
-        run: echo ${{ github.event.release.name }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased.json ./patch-notes/json/{}.json
+        run: echo ${{ github.event.ref }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased.json ./patch-notes/json/{}.json
 
       - name: Version beta patch notes
-        run: echo ${{ github.event.release.name }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased-beta.json ./patch-notes/json/{}.json
+        run: echo ${{ github.event.ref }} | cut -c1 --complement | xargs -I {} mv ./patch-notes/json/unreleased-beta.json ./patch-notes/json/{}.json
 
       - name: Version beta patch notes
-        run: sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/${{ github.event.release.name }}/' ./patch-notes/json/unreleased-beta.json
+        run: sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/${{ github.event.ref }}/' ./patch-notes/json/unreleased-beta.json
 
       - name: Commit & push patch note
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "chore(patchNotes): version patch notes to ${{ github.event.release.name }}"
+          commit_message: "chore(patchNotes): version patch notes to ${{ github.event.ref }}"
           # Optional glob pattern of files which should be added to the commit
           # See the `pathspec`-documentation for git
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
