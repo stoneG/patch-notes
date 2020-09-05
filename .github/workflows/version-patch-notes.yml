@@ -18,7 +18,7 @@ jobs:
           ref: release-candidate-${{ steps.version.outputs.version }}
 
       - name: Version main patch notes
-        run: sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/${{ github.event.ref }}/' ./patch-notes/json/unreleased.json
+        run: echo ${{ github.event.ref }} | cut -c1 --complement | xargs -I {} sed -i 's/[0-9]\+\.[0-9]\+\.[0-9]\+/{}/' ./patch-notes/json/unreleased.json
 
       - name: Move main patch notes
         run: echo ${{ github.event.ref }} | cut -c1 --complement | xargs -I {} git mv ./patch-notes/json/unreleased.json ./patch-notes/json/{}.json

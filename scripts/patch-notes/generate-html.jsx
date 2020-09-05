@@ -58,7 +58,7 @@ function PatchNotes(props) {
 }
 
 ;(async function() {
-  const filenames  = await fs.readdir(PATCH_NOTES_JSON_DIR)
+  const filenames = await fs.readdir(PATCH_NOTES_JSON_DIR)
   for (const filename of filenames) {
     if (filename.startsWith('unreleased') || !filename.endsWith('.json')) {
       console.log('Skipping', filename)
@@ -68,8 +68,8 @@ function PatchNotes(props) {
     const patchNotes = await readPatchNotes(`${PATCH_NOTES_JSON_DIR}/${filename}`)
     const patchNotesHtml = ReactDOMServer.renderToStaticMarkup(<PatchNotes patchNotes={patchNotes} />)
 
-    fs.writeFile(`${PATCH_NOTES_HTML_DIR}/${filename}.html`, patchNotesHtml)
-      .then(() => console.log(`Generated ${filename}.html`))
+    fs.writeFile(`${PATCH_NOTES_HTML_DIR}/${filename.slice(0, -5)}.html`, patchNotesHtml)
+      .then(() => console.log(`Generated ${filename.slice(0, -5)}.html`))
       .catch(err => console.error(err))
   }
 })()
