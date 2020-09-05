@@ -1,0 +1,37 @@
+name: Release Patch Notes
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  release:
+    if: github.event.pull_request.merged == true && github.base_ref == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v2
+        with:
+          ref: release
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - run: npm install minimist semver-utils fs-extra dateformat react react-dom @babel/core @babel/cli @babel/preset-react @babel/plugin-transform-runtime
+
+      - name: Set patch notes release date
+        run: npm run set-patch-notes-release-date
+
+      - name: Generate HTML patch notes
+        run: npm run generate-html-patch-notes
+
+      - name: Commit & push patch note
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(patchNotes): version patch notes to ${{ github.event.ref }}"
+          # Optional glob pattern of files which should be added to the commit
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: patch-notes/html/*.html

@@ -1,7 +1,7 @@
-const exec = require('./exec')
-const package = require('../package.json')
+const package = require('../../package.json')
 const semverUtils = require('semver-utils')
 const fs = require('fs-extra')
+const { PATCH_NOTES_JSON_DIR, readPatchNotes, getDefaultPatchNotes } = require('./utils')
 
 /**
  * --baseRef: string Base branch name
@@ -10,30 +10,6 @@ const fs = require('fs-extra')
  * --note: string
  */
 const argv = require('minimist')(process.argv)
-
-const PATCH_NOTES_JSON_DIR = './patch-notes/json'
-
-/**
- * Read a JSON file as an object
- * @param {string} pathToFile 
- * @param {PatchNotes} defaultPatchNotes
- * 
- * interface PatchNotes {
- *   appName: string
- *   version: string
- *   releaseDate: string
- *   features: string[]
- *   adjustments: string[]
- *   fixes: string[]
- * }
- */
-async function readPatchNotes(pathToFile, defaultPatchNotes = {}) {
-  try {
-    return await fs.readJson(pathToFile)
-  } catch {
-    return defaultPatchNotes
-  }
-}
 
 /**
  * Returns an updated patch notes object with a new patch note added.
@@ -93,22 +69,8 @@ async function updatePatchNotes(fileName, defaultPatchNotes) {
   const version = semverUtils.stringify({ major, minor, patch })
   const betaVersion = semverUtils.stringify({ major, minor, patch, release: 'b' })
 
-  const defaultPatchNotes = {
-    appName: 'NZXT CAM',
-    version,
-    releaseDate: 'n/a',
-    features: [],
-    adjustments: [],
-    fixes: [],
-  }
-  const defaultBetaPatchNotes = {
-    appName: 'NZXT CAM Beta',
-    version: betaVersion,
-    releaseDate: 'n/a',
-    features: [],
-    adjustments: [],
-    fixes: [],
-  }
+  const defaultPatchNotes = getDefaultPatchNotes(version)
+  const defaultBetaPatchNotes = getDefaultPatchNotes(betaVersion)
 
   if (argv.baseRef.startsWith('release-candidate')) {
     if (argv.context != 'beta') {

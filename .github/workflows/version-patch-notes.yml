@@ -12,7 +12,7 @@ jobs:
         id: version
         run: echo ::set-output name=version::$(echo ${{ github.event.ref }} | cut -c1 --complement)
 
-      - name: Checkout release (${{ github.event.ref }})
+      - name: Checkout release candidate (${{ github.event.ref }})
         uses: actions/checkout@v2
         with:
           ref: release-candidate-${{ steps.version.outputs.version }}
