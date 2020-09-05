@@ -11,7 +11,7 @@ jobs:
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
-          ref: release
+          ref: ${{ github.base_ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -30,6 +30,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore(patchNotes): version patch notes to ${{ github.event.ref }}"
+          branch: ${{ github.base_ref }}
           # Optional glob pattern of files which should be added to the commit
           # See the `pathspec`-documentation for git
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203

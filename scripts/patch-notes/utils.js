@@ -27,11 +27,11 @@ async function readPatchNotes(pathToFile, defaultPatchNotes = {}) {
 }
 
 function getDefaultPatchNotes(version) {
-  if (version.startsWith(v)) {
+  if (version.startsWith('v')) {
     version = version.slice(1)
   }
   return {
-    appName: version.findIndex('b') === -1 ? 'NZXT CAM' : 'NZXT CAM Beta',
+    appName: version.indexOf('b') === -1 ? 'NZXT CAM' : 'NZXT CAM Beta',
     version,
     releaseDate: dateFormat(new Date(), 'mmmm d, yyyy'),
     features: [],
