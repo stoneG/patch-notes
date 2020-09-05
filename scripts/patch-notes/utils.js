@@ -31,7 +31,7 @@ function getDefaultPatchNotes(version) {
     version = version.slice(1)
   }
   return {
-    appName: version.findIndex('b') === -1 ? 'NZXT CAM' : 'NZXT CAM Beta',
+    appName: version.indexOf('b') === -1 ? 'NZXT CAM' : 'NZXT CAM Beta',
     version,
     releaseDate: dateFormat(new Date(), 'mmmm d, yyyy'),
     features: [],
