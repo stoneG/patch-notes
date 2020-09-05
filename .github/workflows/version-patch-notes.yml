@@ -2,7 +2,7 @@ name: Version Patch Notes
 on:
   create:
 jobs:
-  version_main_patch_notes:
+  version_patch_notes:
     # Only run this job if this is a vX.X.X named tag
     if: github.event.ref_type == 'tag' && startsWith(github.event.ref, 'v')
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
         id: version
         run: echo ::set-output name=version::$(echo ${{ github.event.ref }} | cut -c1 --complement)
 
-      - name: Checkout release (${{ github.event.ref }})
+      - name: Checkout release candidate (${{ github.event.ref }})
         uses: actions/checkout@v2
         with:
           ref: release-candidate-${{ steps.version.outputs.version }}

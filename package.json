@@ -1,11 +1,13 @@
 {
   "name": "patch-notes",
-  "version": "1.0.0",
+  "version": "1.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "add-patch-note": "node scripts/add-patch-note.js"
+    "add-patch-note": "node scripts/patch-notes/add.js",
+    "set-patch-notes-release-date": "node scripts/patch-notes/set-release-date.js",
+    "generate-html-patch-notes": "babel --config-file ./scripts/patch-notes/babel.config.js ./scripts/patch-notes/generate-html.jsx --out-dir scripts/patch-notes && node scripts/patch-notes/generate-html.js"
   },
   "repository": {
     "type": "git",
@@ -19,9 +21,17 @@
   },
   "homepage": "https://github.com/stoneG/patch-notes#readme",
   "dependencies": {
-    "execa": "^4.0.3",
+    "dateformat": "^3.0.3",
     "fs-extra": "^9.0.1",
     "minimist": "^1.2.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "semver-utils": "^1.1.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-react": "^7.10.4"
   }
 }

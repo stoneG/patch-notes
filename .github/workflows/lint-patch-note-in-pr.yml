@@ -1,4 +1,4 @@
-name: Lint Patch Notes in PR
+name: Patch Notes
 on:
   pull_request:
     types: [opened, edited, reopened]
