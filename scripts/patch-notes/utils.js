@@ -27,7 +27,7 @@ async function readPatchNotes(pathToFile, defaultPatchNotes = {}) {
 }
 
 function getDefaultPatchNotes(version) {
-  if (version.startsWith(v)) {
+  if (version.startsWith('v')) {
     version = version.slice(1)
   }
   return {
