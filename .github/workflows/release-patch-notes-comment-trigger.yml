@@ -7,7 +7,7 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  parseCommentTrigger:
+  trigger:
     runs-on: ubuntu-latest
     outputs:
       triggered: ${{ steps.check.outputs.triggered }}
@@ -24,9 +24,9 @@ jobs:
         if: steps.check.outputs.triggered == 'true'
           
   release:
-    needs: lookForTrigger
+    needs: trigger
     runs-on: ubuntu-latest
-    if: needs.lookForTrigger.outputs.triggered == 'true'
+    if: needs.trigger.outputs.triggered == 'true'
 
     steps:
       - name: Checkout release branch
