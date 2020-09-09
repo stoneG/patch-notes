@@ -1,0 +1,49 @@
+name: Release Patch Notes (Manual)
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+jobs:
+  release:
+    if: github.base_ref == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: khan/pull-request-comment-trigger@master
+        id: check
+        with:
+          trigger: '!release-patch-notes'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      - run: echo "Found trigger !release-patch-notes"
+        if: steps.check.outputs.triggered == 'true'
+      - name: Checkout release branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - run: npm install minimist semver-utils fs-extra dateformat react react-dom @babel/core @babel/cli @babel/preset-react @babel/plugin-transform-runtime
+
+      - name: Set patch notes release date
+        run: npm run set-patch-notes-release-date
+
+      - name: Generate HTML patch notes
+        run: npm run generate-html-patch-notes
+
+      - name: Commit & push patch note
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(patchNotes): version patch notes to ${{ github.event.ref }}"
+          branch: ${{ github.base_ref }}
+          # Optional glob pattern of files which should be added to the commit
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: patch-notes/html/*.html
