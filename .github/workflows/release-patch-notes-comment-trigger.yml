@@ -7,8 +7,10 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  lookForTrigger:
+  parseCommentTrigger:
     runs-on: ubuntu-latest
+    outputs:
+      triggered: ${{ steps.check.outputs.triggered }}
 
     steps:
       - uses: khan/pull-request-comment-trigger@master
@@ -20,10 +22,11 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       - run: echo "Found trigger !release-patch-notes"
         if: steps.check.outputs.triggered == 'true'
+          
   release:
     needs: lookForTrigger
     runs-on: ubuntu-latest
-    if: needs.lookForTrigger.steps.check.outputs.triggered == 'true'
+    if: needs.lookForTrigger.outputs.triggered == 'true'
 
     steps:
       - name: Checkout release branch
