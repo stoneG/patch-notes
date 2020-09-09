@@ -23,7 +23,7 @@ jobs:
   release:
     needs: lookForTrigger
     runs-on: ubuntu-latest
-    if: needs.lookForTrigger.outputs.check.triggered == 'true'
+    if: needs.lookForTrigger.steps.check.outputs.check.triggered == 'true'
 
     steps:
       - name: Checkout release branch
