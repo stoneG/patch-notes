@@ -1,4 +1,4 @@
-name: Release Patch Notes (Manual)
+name: Build Patch Notes (Stable)
 on:
   pull_request:
     types: [opened]
@@ -7,7 +7,7 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  trigger:
+  stable:
     runs-on: ubuntu-latest
     outputs:
       triggered: ${{ steps.check.outputs.triggered }}
@@ -16,17 +16,28 @@ jobs:
       - uses: khan/pull-request-comment-trigger@master
         id: check
         with:
-          trigger: '!release-patch-notes'
+          trigger: '!build-stable-patch-notes'
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - run: echo "Found trigger !release-patch-notes"
-        if: steps.check.outputs.triggered == 'true'
-          
-  release:
-    needs: trigger
+  beta:
     runs-on: ubuntu-latest
-    if: needs.trigger.outputs.triggered == 'true'
+    outputs:
+      triggered: ${{ steps.check.outputs.triggered }}
+
+    steps:
+      - uses: khan/pull-request-comment-trigger@master
+        id: check
+        with:
+          trigger: '!build-beta-patch-notes'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          
+  build:
+    needs: [stable, beta]
+    runs-on: ubuntu-latest
+    if: needs.stable.outputs.triggered == 'true' || needs.beta.outputs.triggered == 'true'
 
     steps:
       - name: Checkout release branch
@@ -41,8 +52,13 @@ jobs:
       
       - run: npm install minimist semver-utils fs-extra dateformat react react-dom @babel/core @babel/cli @babel/preset-react @babel/plugin-transform-runtime
 
-      - name: Set patch notes release date
-        run: npm run set-patch-notes-release-date
+      - name: Set stable patch notes release date
+        if: needs.stable.outputs.triggered == 'true'
+        run: npm run set-patch-notes-release-date -- --stable
+
+      - name: Set beta patch notes release date
+        if: needs.beta.outputs.triggered == 'true'
+        run: npm run set-patch-notes-release-date -- --beta
 
       - name: Generate HTML patch notes
         run: npm run generate-html-patch-notes

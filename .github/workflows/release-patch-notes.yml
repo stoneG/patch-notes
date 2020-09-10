@@ -22,8 +22,8 @@ jobs:
       
       - run: npm install minimist semver-utils fs-extra dateformat react react-dom @babel/core @babel/cli @babel/preset-react @babel/plugin-transform-runtime
 
-      - name: Set patch notes release date
-        run: npm run set-patch-notes-release-date
+      - name: Set stable patch notes release date
+        run: npm run set-patch-notes-release-date --stable
 
       - name: Generate HTML patch notes
         run: npm run generate-html-patch-notes

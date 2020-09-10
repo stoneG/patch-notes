@@ -5,6 +5,12 @@ const dateFormat = require('dateformat')
 const { PATCH_NOTES_JSON_DIR, readPatchNotes, getDefaultPatchNotes } = require('./utils')
 
 /**
+ * --beta: boolean
+ * --stable: boolean
+ */
+const argv = require('minimist')(process.argv)
+
+/**
  * Update patch notes file release date.
  * @param {string} filename
  * @param {PatchNotes} defaultPatchNotes 
@@ -28,12 +34,17 @@ async function updatePatchNotesReleaseDate(fileName, defaultPatchNotes) {
 
 ;(async function() {
   const { major, minor, patch } = semverUtils.parse(package.version)
-  const version = semverUtils.stringify({ major, minor, patch })
-  const betaVersion = semverUtils.stringify({ major, minor, patch, release: 'b' })
 
-  const defaultPatchNotes = getDefaultPatchNotes(version)
-  const defaultBetaPatchNotes = getDefaultPatchNotes(betaVersion)
+  const versions = []
+  if (argv.beta) {
+    versions.push(semverUtils.stringify({ major, minor, patch }))
+  }
+  if (argv.stable) {
+    versions.push(semverUtils.stringify({ major, minor, patch, release: 'b' }))
+  }
 
-  updatePatchNotesReleaseDate(version, defaultPatchNotes)
-  updatePatchNotesReleaseDate(betaVersion, defaultBetaPatchNotes)
+  versions.forEach(v => {
+    const defaultPatchNotes = getDefaultPatchNotes(v)
+    updatePatchNotesReleaseDate(v, defaultPatchNotes)
+  })
 })()
