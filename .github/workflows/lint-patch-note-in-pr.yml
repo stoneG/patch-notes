@@ -14,6 +14,6 @@ jobs:
           path: ./.github/actions/add-patch-notes
       - name: Add patch notes
         uses: ./.github/actions/add-patch-notes
-        id: addPatchNotes
+        id: patchNotes
       - name: Print patch note
-        run: echo "Found patch note ${{ steps.addPatchNotes.outputs.type }}(${{ steps.addPatchNotes.outputs.context }}) - ${{ steps.addPatchNotes.outputs.patchNote }}"
+        run: echo "Found patch note ${{ steps.patchNotes.outputs.type }}(${{ steps.patchNotes.outputs.context }}) - ${{ steps.patchNotes.outputs.patchNote }}"
