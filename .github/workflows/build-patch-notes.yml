@@ -92,10 +92,10 @@ jobs:
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           comment-id: ${{ github.event.comment.id }}
-          reactions: +1
+          reactions: '+1'
       - name: Failure
         if: failure()
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           comment-id: ${{ github.event.comment.id }}
-          reactions: -1
+          reactions: '-1'
