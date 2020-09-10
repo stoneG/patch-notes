@@ -38,7 +38,6 @@ jobs:
     needs: [stable, beta]
     runs-on: ubuntu-latest
     if: needs.stable.outputs.triggered == 'true' || needs.beta.outputs.triggered == 'true'
-
     outputs:
       head_ref: ${{ steps.pr.outputs.head_ref }}
     
@@ -47,6 +46,7 @@ jobs:
         id: pr
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ${{ setps.pr.outputs.head_ref }}
           
   build:
     needs: [stable, beta, get]
