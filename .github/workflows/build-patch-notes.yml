@@ -40,7 +40,7 @@ jobs:
     if: needs.stable.outputs.triggered == 'true' || needs.beta.outputs.triggered == 'true'
 
     steps:
-      - run: echo ${{ toJSON(github.event) }}
+      - run: echo ${{ toJSON(github) }}
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
