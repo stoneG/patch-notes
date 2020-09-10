@@ -1,4 +1,4 @@
-name: Build Patch Notes (Stable)
+name: Build Patch Notes
 on:
   pull_request:
     types: [opened]
@@ -30,7 +30,7 @@ jobs:
         id: check
         with:
           trigger: '!build-beta-patch-notes'
-          reaction: rocket
+          reaction: eyes
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
@@ -87,3 +87,15 @@ jobs:
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
           # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
           file_pattern: patch-notes/html/*.html
+      - name: Success
+        if: success()
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: +1
+      - name: Failure
+        if: failure()
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: -1

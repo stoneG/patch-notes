@@ -36,10 +36,10 @@ async function updatePatchNotesReleaseDate(fileName, defaultPatchNotes) {
   const { major, minor, patch } = semverUtils.parse(package.version)
 
   const versions = []
-  if (argv.beta) {
+  if (argv.stable) {
     versions.push(semverUtils.stringify({ major, minor, patch }))
   }
-  if (argv.stable) {
+  if (argv.beta) {
     versions.push(semverUtils.stringify({ major, minor, patch, release: 'b' }))
   }
 
