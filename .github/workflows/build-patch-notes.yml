@@ -46,7 +46,7 @@ jobs:
         id: pr
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo ${{ setps.pr.outputs.head_ref }}
+      - run: echo ${{ steps.pr.outputs.head_ref }}
           
   build:
     needs: [stable, beta, get]
