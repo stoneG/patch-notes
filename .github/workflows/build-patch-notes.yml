@@ -33,18 +33,31 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          
-  build:
+
+  get:
     needs: [stable, beta]
     runs-on: ubuntu-latest
     if: needs.stable.outputs.triggered == 'true' || needs.beta.outputs.triggered == 'true'
 
+    outputs:
+      head_ref: ${{ steps.pr.outputs.head_ref }}
+    
     steps:
-      - run: echo ${{ toJSON(github) }}
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: pr
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          
+  build:
+    needs: [stable, beta, get]
+    runs-on: ubuntu-latest
+    if: needs.stable.outputs.triggered == 'true' || needs.beta.outputs.triggered == 'true'
+
+    steps:
       - name: Checkout release branch
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.issue.pull_request.head_ref }}
+          ref: ${{ needs.get.outputs.head_ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -67,8 +80,8 @@ jobs:
       - name: Commit & push patch note
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "chore(patchNotes): version patch notes to ${{ github.event.issue.pull_request.head_ref }}"
-          branch: ${{ github.event.issue.pull_request.head_ref }}
+          commit_message: "chore(patchNotes): version patch notes to ${{ needs.get.outputs.head_ref }}"
+          branch: ${{ needs.get.outputs.head_ref }}
           # Optional glob pattern of files which should be added to the commit
           # See the `pathspec`-documentation for git
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
