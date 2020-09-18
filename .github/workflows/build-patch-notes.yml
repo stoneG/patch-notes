@@ -82,10 +82,6 @@ jobs:
         with:
           commit_message: "chore(patchNotes): version patch notes to ${{ needs.get.outputs.head_ref }}"
           branch: ${{ needs.get.outputs.head_ref }}
-          # Optional glob pattern of files which should be added to the commit
-          # See the `pathspec`-documentation for git
-          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
-          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
           file_pattern: patch-notes/html/*.html
       - name: Success
         if: success()

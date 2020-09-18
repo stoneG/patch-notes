@@ -10,6 +10,8 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+    outputs:
+      patchNotes: ${{ steps.patchNotes.outputs.patchNotes }}
 
     steps:
       - name: Checkout base branch (${{ github.base_ref }})
@@ -27,21 +29,32 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: Parse patch note
-        id: patchNote
+        id: patchNotes
         uses: ./.github/actions/add-patch-notes
-
+  
+  write:
+    needs: [parse]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        patchNote: ${{ fromJson(needs.parse.outputs.patchNotes) }}
+    steps:
       - name: Print parsed patch note
-        run: echo "Found patch note ${{ steps.patchNote.outputs.type }}(${{ steps.patchNote.outputs.context }}) - ${{ steps.patchNote.outputs.note }}"
+        run: echo "Found patch note ${{ matrix.patchNote.type }} - ${{ matrix.patchNote.body }}"
 
       - name: Write patch note
-        run: npm run add-patch-note -- --baseRef=${{ github.base_ref }} --type=${{ steps.patchNote.outputs.type }} --context=${{ steps.patchNote.outputs.context }} --note="${{ steps.patchNote.outputs.note }}"
+        run: npm run add-patch-note -- --baseRef=${{ github.base_ref }} --type=${{ matrix.patchNote.type }} --context=${{ matrix.patchNote.context }} --note="${{ matrix.patchNote.body }}"
 
+  commit:
+    needs: [write]
+    runs-on: ubuntu-latest
+    steps:
       - name: Commit & push patch note
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "chore(patchNotes): add patch note"
+          commit_message: "chore(patchNotes): add patch notes"
           # Optional branch to push to, defaults to the current branch
           branch: ${{ github.base_ref }}
 
