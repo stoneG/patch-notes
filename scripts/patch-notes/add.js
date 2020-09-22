@@ -5,9 +5,11 @@ const { PATCH_NOTES_JSON_DIR, readPatchNotes, getDefaultPatchNotes } = require('
 
 /**
  * --baseRef: string Base branch name
- * --type: 'feat' | 'adj' | 'fix' | undefined
- * --context: 'beta'
- * --note: string
+ * --patchNotes: {
+ *   type: 'feat' | 'adj' | 'fix' | undefined
+ *   context: 'beta'
+ *   body: string
+ * }[] (as a json)
  */
 const argv = require('minimist')(process.argv)
 
@@ -18,7 +20,7 @@ const argv = require('minimist')(process.argv)
  * 
  * interface PatchNote {
  *   type: string
- *   note: string
+ *   body: string
  * }
  * 
  * interface PatchNotes {
@@ -33,35 +35,36 @@ const argv = require('minimist')(process.argv)
 function addPatchNote(patchNote, patchNotes) {
   switch (patchNote.type) {
     case 'feat':
-      patchNotes.features.push(patchNote.note)
+      patchNotes.features.push(patchNote.body)
       return patchNotes
     case 'adj':
-      patchNotes.adjustments.push(patchNote.note)
+      patchNotes.adjustments.push(patchNote.body)
       return patchNotes
     case 'fix':
-      patchNotes.fixes.push(patchNote.note)
+      patchNotes.fixes.push(patchNote.body)
       return patchNotes
     default:
       console.warn(`Patch note type (${patchNotes.type}) is not supported.`)
   }
 }
 
-async function updatePatchNotes(fileName, defaultPatchNotes) {
+async function updatePatchNotes(fileName, patchNote, defaultPatchNotes) {
   const patchNotes = addPatchNote(
     {
-      type: argv.type,
-      note: argv.note,
+      type: patchNote.type,
+      body: patchNote.body,
     },
     await readPatchNotes(`${PATCH_NOTES_JSON_DIR}/${fileName}.json`, defaultPatchNotes)
   )
   fs.writeJson(`${PATCH_NOTES_JSON_DIR}/${fileName}.json`, patchNotes)
-    .then(() => console.log(`Updated ${fileName}.json with ${argv.type}: ${argv.note}`))
+    .then(() => console.log(`Updated ${fileName}.json with ${argv.type}: ${argv.body}`))
     .catch(err => console.error(err))
 }
 
 ;(async function() {
-  if (!argv.type || argv.type === 'n/a') {
-    console.log(`Got patch note type (${argv.type}), skipping...`)
+  const patchNotes = JSON.parse(argv.patchNotes || '[]')
+  if (!patchNotes.length) {
+    console.log(`No patch notes found, skipping...`)
     return
   }
 
@@ -72,15 +75,17 @@ async function updatePatchNotes(fileName, defaultPatchNotes) {
   const defaultPatchNotes = getDefaultPatchNotes(version)
   const defaultBetaPatchNotes = getDefaultPatchNotes(betaVersion)
 
-  if (argv.baseRef.startsWith('release-candidate')) {
-    if (argv.context != 'beta') {
-      updatePatchNotes(version, defaultPatchNotes)
+  for (const patchNote of patchNotes) {
+    if (argv.baseRef.startsWith('release-candidate')) {
+      if (patchNote.context != 'beta') {
+        updatePatchNotes(version, defaultPatchNotes)
+      }
+      updatePatchNotes(betaVersion, defaultBetaPatchNotes)
+    } else {
+      if (patchNote.context != 'beta') {
+        updatePatchNotes('unreleased', defaultPatchNotes)
+      }
+      updatePatchNotes('unreleased-beta', defaultBetaPatchNotes)
     }
-    updatePatchNotes(betaVersion, defaultBetaPatchNotes)
-  } else {
-    if (argv.context != 'beta') {
-      updatePatchNotes('unreleased', defaultPatchNotes)
-    }
-    updatePatchNotes('unreleased-beta', defaultBetaPatchNotes)
   }
 })()
