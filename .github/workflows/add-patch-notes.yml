@@ -27,7 +27,7 @@ jobs:
         id: patchNotes
         uses: ./.github/actions/add-patch-notes
       - name: Write patch note
-        run: npm run add-patch-note -- --baseRef=${{ github.base_ref }} --patchNote=${{ steps.patchNotes.output.patchNotes }}
+        run: npm run add-patch-note -- --baseRef=${{ github.base_ref }} --patchNote=${{ steps.patchNotes.outputs.patchNotes }}
       - name: Commit & push patch note
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
