@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [closed]
 jobs:
-  parse:
+  add:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
@@ -23,12 +23,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: Parse patch note
+      - name: Parse patch notes
         id: patchNotes
         uses: ./.github/actions/add-patch-notes
-      - name: Write patch note
-        run: npm run add-patch-note -- --baseRef=${{ github.base_ref }} --patchNotes=${{ toJson(steps.patchNotes.outputs.patchNotes) }}
-      - name: Commit & push patch note
+      - name: Write patch notes
+        run: npm run add-patch-notes -- --baseRef=${{ github.base_ref }} --patchNotes=${{ toJson(steps.patchNotes.outputs.patchNotes) }}
+      - name: Commit & push patch notes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore(patchNotes): add patch notes"

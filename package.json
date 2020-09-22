@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "add-patch-note": "node scripts/patch-notes/add.js",
+    "add-patch-notes": "node scripts/patch-notes/add.js",
     "set-patch-notes-release-date": "node scripts/patch-notes/set-release-date.js",
     "generate-html-patch-notes": "babel --config-file ./scripts/patch-notes/babel.config.js ./scripts/patch-notes/generate-html.jsx --out-dir scripts/patch-notes && node scripts/patch-notes/generate-html.js"
   },
