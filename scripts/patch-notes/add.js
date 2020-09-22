@@ -57,7 +57,7 @@ async function updatePatchNotes(fileName, patchNote, defaultPatchNotes) {
     await readPatchNotes(`${PATCH_NOTES_JSON_DIR}/${fileName}.json`, defaultPatchNotes)
   )
   fs.writeJson(`${PATCH_NOTES_JSON_DIR}/${fileName}.json`, patchNotes)
-    .then(() => console.log(`Updated ${fileName}.json with ${argv.type}: ${argv.body}`))
+    .then(() => console.log(`Updated ${fileName}.json with ${patchNote.type}: ${patchNote.body}`))
     .catch(err => console.error(err))
 }
 
@@ -78,14 +78,14 @@ async function updatePatchNotes(fileName, patchNote, defaultPatchNotes) {
   for (const patchNote of patchNotes) {
     if (argv.baseRef.startsWith('release-candidate')) {
       if (patchNote.context != 'beta') {
-        updatePatchNotes(version, defaultPatchNotes)
+        updatePatchNotes(version, patchNote, defaultPatchNotes)
       }
-      updatePatchNotes(betaVersion, defaultBetaPatchNotes)
+      updatePatchNotes(betaVersion, patchNote, defaultBetaPatchNotes)
     } else {
       if (patchNote.context != 'beta') {
-        updatePatchNotes('unreleased', defaultPatchNotes)
+        updatePatchNotes('unreleased', patchNote, defaultPatchNotes)
       }
-      updatePatchNotes('unreleased-beta', defaultBetaPatchNotes)
+      updatePatchNotes('unreleased-beta', patchNote, defaultBetaPatchNotes)
     }
   }
 })()
